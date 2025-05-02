@@ -31,10 +31,14 @@ A simple Python CLI program to track and manage monthly expenses and loans, stor
 python expense_tracker.py
 
 ```
-## Monthly Expense Tracker
+### Example Usage
+
+```
+Monthly Expense Tracker
 1. Add a new expense
 2. View all expenses
 3. Exit
+```
 
 
 
