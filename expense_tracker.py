@@ -4,18 +4,79 @@ import json
 DATA_FILE = "data.json"
 
 
+def main():
+    while True:
+        print("\n Monthly Expense Tracker")
+        print("1. Add a new expense")
+        print("2. View all expenses")
+        print("3. Exit")
+
+        choice = input()
+
+        if choice == "1":
+            add_monthly_expense()
+        elif choice == "2":
+            view_expenses()
+        elif choice == "3":
+            print("Goodbye!")
+            break
+        else:
+            print("Please make a selection. ")
+
+
 def add_monthly_expense():
     monthly_expense = input(
-        "What kind of monthly expense is this? (loan or bill): "
+        "What kind of monthly expense would you like to add? (loan or bill): "
     ).lower()
 
     if monthly_expense == "loan":
-        name = input("Enter name of loan (e.g., Car Loan, Student Loan): ")
-        amount = float(input("Enter monthly payment amount: "))
-        due_date = input("Enter due date: ")
-        apr = float(input("Enter APR (e.g., 6 for 6%): "))
-        remaining = float(input("Enter current remaining balance: "))
-        monthly_payment = float(input("Enter expected monthly payment: "))
+        name = input("Enter name of loan (e.g., Car Loan, Student Loan, etc.): ")
+
+        while True:
+            try:
+                amount = float(input("Enter monthly payment amount: "))
+                break
+            except ValueError:
+                print("Enter a valid number(s). ")
+
+        while True:
+            due_date = input("Enter due date (MM/DD/YYYY or MMDDYYYY): ").strip()
+
+            # Try both formats
+            for fmt in ("%m/%d/%Y", "%m%d%Y"):
+                try:
+                    parsed = datetime.strptime(due_date, fmt)
+                    due_date = parsed.strftime("%m/%d/%Y")  # Consistent output format
+                    break  # Exit loop if valid
+                except ValueError:
+                    continue  # Try next format
+
+            else:
+                print("Invalid date. Please enter in MM/DD/YYYY or MMDDYYYY format.")
+                continue  # Restart the input loop
+
+            break  # Only break when we have a valid date
+
+        while True:
+            try:
+                apr = float(input("Enter APR (e.g., 6 for 6%): "))
+                break
+            except ValueError:
+                print("Enter a valid number(s). ")
+
+        while True:
+            try:
+                remaining = float(input("Enter current remaining balance: "))
+                break
+            except ValueError:
+                print("Enter a valid number.")
+
+        while True:
+            try:
+                monthly_payment = float(input("Enter expected monthly payment: "))
+                break
+            except ValueError:
+                print("Enter a valid number.")
 
         expense = {
             "monthly_expense": monthly_expense,
@@ -29,8 +90,30 @@ def add_monthly_expense():
 
     elif monthly_expense == "bill":
         name = input("Enter name of bill (e.g., Rent, Car Insurance, Internet): ")
-        amount = float(input("Enter monthly amount: "))
-        due_date = input("Enter due date: ")
+
+        while True:
+            try:
+                amount = float(input("Enter monthly amount: "))
+                break
+            except ValueError:
+                print("Enter a valid number.")
+
+        while True:
+            due_date = input("Enter due date (MM/DD/YYYY or MMDDYYYY): ").strip()
+
+            for fmt in ("%m/%d/%Y", "%m%d%Y"):
+                try:
+                    parsed = datetime.strptime(due_date, fmt)
+                    due_date = parsed.strftime("%m/%d/%Y")
+
+                    break
+                except ValueError:
+                    continue
+
+            else:
+                print("Invalid date. Please enter in MM/DD/YYYY format.")
+                continue
+            break
 
         if name.lower() in ["car insurance", "auto insurance"]:
             print("Auto/Car Insurance will be treated as a 6-month fixed-term policy.")
@@ -74,9 +157,6 @@ def add_monthly_expense():
         json.dump(expenses, file, indent=4)
 
 
-add_monthly_expense()
-
-
 def view_expenses():
 
     try:
@@ -97,26 +177,6 @@ def view_expenses():
             balance = expense.get("remaining_balance", "N/A")
             print(f"{index}. {name} - ${amount:.2f} (Due: {due}, Remaining: {balance})")
         print("--------------------")
-
-
-def main():
-    while True:
-        print("\n Monthly Expense Tracker")
-        print("1. Add a new expense")
-        print("2. View all expenses")
-        print("3. Exit")
-
-        choice = input("Choose an option (1, 2, or 3): ").strip()
-
-        if choice == "1":
-            add_monthly_expense()
-        elif choice == "2":
-            view_expenses()
-        elif choice == "3":
-            print("Goodbye!")
-            break
-        else:
-            print("Invalid choice. Try again.")
 
 
 if __name__ == "__main__":
