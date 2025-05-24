@@ -3,8 +3,11 @@ import json
 
 DATA_FILE = "data.json"
 
+
 def add_monthly_expense():
-    monthly_expense = input("What kind of monthly expense is this? (loan or bill): ").lower()
+    monthly_expense = input(
+        "What kind of monthly expense is this? (loan or bill): "
+    ).lower()
 
     if monthly_expense == "loan":
         name = input("Enter name of loan (e.g., Car Loan, Student Loan): ")
@@ -21,7 +24,7 @@ def add_monthly_expense():
             "due_date": due_date,
             "apr": apr,
             "remaining_balance": remaining,
-            "monthly_payment": monthly_payment
+            "monthly_payment": monthly_payment,
         }
 
     elif monthly_expense == "bill":
@@ -36,7 +39,9 @@ def add_monthly_expense():
             try:
                 start_date = datetime.strptime(start_input, "%m-%Y")
                 today = datetime.today()
-                months_passed = (today.year - start_date.year) * 12 + today.month - start_date.month
+                months_passed = (
+                    (today.year - start_date.year) * 12 + today.month - start_date.month
+                )
                 months_remaining = max(6 - months_passed, 0)
                 remaining = amount * months_remaining
             except ValueError:
@@ -50,7 +55,7 @@ def add_monthly_expense():
             "name": name,
             "amount": amount,
             "due_date": due_date,
-            "remaining_balance": remaining
+            "remaining_balance": remaining,
         }
 
     else:
@@ -58,23 +63,24 @@ def add_monthly_expense():
         return
 
     try:
-        with open(DATA_FILE, 'r') as file:
+        with open(DATA_FILE, "r") as file:
             expenses = json.load(file)
     except (FileNotFoundError, json.JSONDecodeError):
         expenses = []
 
     expenses.append(expense)
 
-    with open(DATA_FILE, 'w') as file:
+    with open(DATA_FILE, "w") as file:
         json.dump(expenses, file, indent=4)
 
 
 add_monthly_expense()
 
+
 def view_expenses():
 
     try:
-        with open(DATA_FILE, 'r') as file:
+        with open(DATA_FILE, "r") as file:
             expenses = json.load(file)
     except (FileNotFoundError, json.JSONDecodeError):
         expenses = []
@@ -91,6 +97,7 @@ def view_expenses():
             balance = expense.get("remaining_balance", "N/A")
             print(f"{index}. {name} - ${amount:.2f} (Due: {due}, Remaining: {balance})")
         print("--------------------")
+
 
 def main():
     while True:
@@ -110,6 +117,7 @@ def main():
             break
         else:
             print("Invalid choice. Try again.")
+
 
 if __name__ == "__main__":
     main()
